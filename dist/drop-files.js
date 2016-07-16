@@ -1,5 +1,6 @@
-var DropFiles = (function () {
-    function DropFiles(event) {
+"use strict";
+class DropFiles {
+    constructor(event) {
         this.length = 0;
         this.totalSize = 0;
         this.files = [];
@@ -42,7 +43,7 @@ var DropFiles = (function () {
         });
     }
     // Extracts the files from the folders
-    DropFiles.prototype._processPending = function () {
+    _processPending() {
         var self = this;
         if (self._pending.length > 0) {
             var item = self._pending.shift(), items = item.items, length = items.length;
@@ -133,8 +134,8 @@ var DropFiles = (function () {
         else {
             self._completeProcessing();
         }
-    };
-    DropFiles.prototype._completeProcessing = function () {
+    }
+    _completeProcessing() {
         var self = this;
         self.calculating = false;
         self.length = self.files.length;
@@ -144,8 +145,7 @@ var DropFiles = (function () {
         else {
             self.reject('no files found');
         }
-    };
-    return DropFiles;
-})();
+    }
+}
 exports.DropFiles = DropFiles;
 //# sourceMappingURL=drop-files.js.map

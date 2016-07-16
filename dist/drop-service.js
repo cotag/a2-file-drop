@@ -1,8 +1,9 @@
+"use strict";
 // Require what we need from rxjs
-var Rx_1 = require('rxjs/Rx');
-var drop_files_1 = require('./drop-files');
-var DropService = (function () {
-    function DropService() {
+const Rx_1 = require('rxjs/Rx');
+const drop_files_1 = require('./drop-files');
+class DropService {
+    constructor() {
         // All the elements we are interested in highlighting when the mouse is over them
         this._dropTargets = [];
         // These track the relationship between elements, callbacks and file streams
@@ -19,7 +20,7 @@ var DropService = (function () {
             .map(self._preventDefault)
             .filter(self._checkTarget.bind(self));
         // Prevent default on all dragover events
-        self._dragover = Rx_1.Observable.fromEvent(window, 'dragover').subscribe(function (event) {
+        self._dragover = Rx_1.Observable.fromEvent(window, 'dragover').subscribe((event) => {
             event.preventDefault();
         });
         self._dragenter = Rx_1.Observable.fromEvent(window, 'dragenter')
@@ -49,17 +50,17 @@ var DropService = (function () {
             return false;
         });
         // Start watching for the events
-        self._dragenter.subscribe(function (obj) {
+        self._dragenter.subscribe((obj) => {
             overFired = obj.target;
             self._updateClasses(obj);
         });
-        self._dragleave.subscribe(function (obj) {
+        self._dragleave.subscribe((obj) => {
             if (!overFired) {
                 self._removeClass(obj);
             }
             overFired = null;
         });
-        self._drop.subscribe(function (obj) {
+        self._drop.subscribe((obj) => {
             var observer = self._removeClass(obj);
             // Stream the files
             if (observer) {
@@ -71,7 +72,7 @@ var DropService = (function () {
         });
     }
     // Configures an element to become a drop target
-    DropService.prototype.register = function (name, element, callback) {
+    register(name, element, callback) {
         var self = this;
         // Register the drop-target
         self._ensureStream(name);
@@ -89,8 +90,8 @@ var DropService = (function () {
                 self._callbacks[name].splice(index, 1);
             }
         };
-    };
-    DropService.prototype.pushFiles = function (stream, files) {
+    }
+    pushFiles(stream, files) {
         var observer = this._observers[stream];
         if (observer) {
             observer.next({
@@ -102,15 +103,15 @@ var DropService = (function () {
                 })
             });
         }
-    };
+    }
     // Hooks up a function to recieve a the files from a particular stream
     // 3 events: 'over', 'left', 'drop'
-    DropService.prototype.getStream = function (name) {
+    getStream(name) {
         this._ensureStream(name);
         return this._streams[name];
-    };
+    }
     // Initialises a new file stream if it did not exist
-    DropService.prototype._ensureStream = function (name) {
+    _ensureStream(name) {
         if (!this._streams[name]) {
             var self = this;
             self._streams[name] = new Rx_1.Observable(function (observer) {
@@ -123,9 +124,9 @@ var DropService = (function () {
             self._streamMapping[name] = [];
             self._callbacks[name] = [];
         }
-    };
+    }
     // The new stream object allows us to change the target (read only in the originalEvent)
-    DropService.prototype._preventDefault = function (event) {
+    _preventDefault(event) {
         event.preventDefault();
         event.stopPropagation();
         return {
@@ -133,9 +134,9 @@ var DropService = (function () {
             target: event.target,
             type: event.type
         };
-    };
+    }
     // Checks if we need to perform a class addition or removal
-    DropService.prototype._checkTarget = function (obj) {
+    _checkTarget(obj) {
         var self = this, dropTargets = self._dropTargets, target = obj.target;
         // We have to count the objects using a set as firefox
         // often fires events twice
@@ -155,9 +156,9 @@ var DropService = (function () {
         if (target || self._currentTarget)
             return true;
         return false;
-    };
+    }
     // Returns the stream name for an element
-    DropService.prototype._findStream = function (element) {
+    _findStream(element) {
         var mapping = this._streamMapping, prop;
         for (prop in mapping) {
             if (mapping.hasOwnProperty(prop) && mapping[prop].indexOf(element) !== -1) {
@@ -165,19 +166,18 @@ var DropService = (function () {
             }
         }
         return null;
-    };
+    }
     // Informs the element of its highlight state
-    DropService.prototype._performCallback = function (target, state, stream) {
-        if (stream === void 0) { stream = null; }
+    _performCallback(target, state, stream = null) {
         stream = stream || this._findStream(target);
         this._callbacks[stream].forEach(function (cb) {
             cb(state);
         });
         // We return stream so we don't ever have to look it up twice
         return stream;
-    };
+    }
     // Based on the current target, determines if a class change needs to occur
-    DropService.prototype._updateClasses = function (obj) {
+    _updateClasses(obj) {
         var target = obj.target, currentTarget = this._currentTarget, stream;
         // Have we moved off a target
         if (currentTarget && currentTarget !== target) {
@@ -195,20 +195,19 @@ var DropService = (function () {
             }
         }
         this._currentTarget = target;
-    };
-    DropService.prototype._removeClass = function (obj) {
+    }
+    _removeClass(obj) {
         var stream = this._performCallback(obj.target, false);
         this._currentTarget = null;
         return this._notifyObservers(stream, { event: 'left' });
-    };
-    DropService.prototype._notifyObservers = function (stream, object) {
+    }
+    _notifyObservers(stream, object) {
         var observer = this._observers[stream];
         if (observer) {
             observer.next(object);
         }
         return observer;
-    };
-    return DropService;
-})();
+    }
+}
 exports.DropService = DropService;
 //# sourceMappingURL=drop-service.js.map

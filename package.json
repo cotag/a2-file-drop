@@ -4,7 +4,7 @@
   },
   "contributors": [],
   "devDependencies": {
-    "angular2": "latest",
+    "@angular/core": "latest",
     "rxjs": "latest",
     "jasmine-core": "latest",
     "karma": "latest",
@@ -36,5 +36,5 @@
     "build": "node node_modules/typescript/bin/tsc",
     "test": "node node_modules/karma/bin/karma start karma.conf.js"
   },
-  "version": "2.0.3"
+  "version": "2.0.4"
 }
