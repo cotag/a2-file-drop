@@ -1,3 +1,8 @@
+# NOTE:: Merged into https://www.npmjs.com/package/@aca-1/a2-widgets
+
+This repo is no longer maintained however this documentation is still quite accurate. You can see the up to date code here: https://github.com/acaprojects/a2-widgets/tree/master/src/services/drop-service
+
+
 # Introduction
 
 Allows you to place multiple drag and drop hotspots onto a webpage.
